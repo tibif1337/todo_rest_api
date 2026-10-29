@@ -1,0 +1,86 @@
+============================================================
+ HOW TO RUN THE TODO WEBSITE ON LOCALHOST
+============================================================
+Result: website on http://127.0.0.1:8000
+(API runs on http://127.0.0.1:8080)
+
+------------------------------------------------------------
+PART 1 - ONE-TIME SETUP (only if you haven't done this yet)
+------------------------------------------------------------
+Install JDK 25, Maven and PostgreSQL:
+    sudo apt install openjdk-25-jdk maven postgresql
+
+Start PostgreSQL:
+    sudo service postgresql start
+
+Set the postgres password to 1234 (the password the app expects):
+    sudo -u postgres psql -c "ALTER USER postgres PASSWORD '1234';"
+
+Create the database:
+    sudo -u postgres createdb todo_app
+
+Create the tables (safe to run again, uses IF NOT EXISTS):
+    sudo -u postgres psql -d todo_app -f "$HOME/Documents/Schoolspullen/java/Weekopdracht_database_2 (1)/Weekopdracht_database_2/todo-api/database/schema.sql"
+
+------------------------------------------------------------
+PART 2 - EVERY TIME YOU WANT TO RUN THE WEBSITE
+------------------------------------------------------------
+You need TWO terminals open.
+
+--- TERMINAL 1: start the Java API ---
+    export DB_PASSWORD=1234
+    export JWT_SECRET="this-is-a-development-secret-key-that-is-at-least-32-bytes-long"
+    cd "$HOME/Documents/Schoolspullen/java/Weekopdracht_database_2 (1)/Weekopdracht_database_2/todo-api"
+    mvn clean compile exec:java
+
+Wait until it prints:
+    "Todo API running at http://127.0.0.1:8080"
+
+--- TERMINAL 2: start the website (static frontend) ---
+    python3 -m http.server 8000 --directory "$HOME/Documents/Schoolspullen/java/Weekopdracht_database_2 (1)/Weekopdracht_database_2/todo-api/frontend"
+
+--- OPEN IN BROWSER ---
+    http://127.0.0.1:8000
+
+Register an account, log in, and you're done.
+
+------------------------------------------------------------
+PART 3 - RUNNING THE MAVEN TESTS
+------------------------------------------------------------
+The tests (JUnit + Cucumber) use a SEPARATE database
+(todo_app_test) and their own server on port 8081, so they
+don't touch your real data and can run while the website is
+up.
+
+One-time setup (already done on this machine):
+    PGPASSWORD=1234 psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE todo_app_test;"
+    PGPASSWORD=1234 psql -h 127.0.0.1 -U postgres -d todo_app_test -f "$HOME/Documents/Schoolspullen/java/Weekopdracht_database_2 (1)/Weekopdracht_database_2/todo-api/database/schema.sql"
+
+Every time you want to run the tests, in ONE terminal:
+    export DB_URL=jdbc:postgresql://localhost:5432/todo_app_test
+    export DB_USERNAME=postgres
+    export DB_PASSWORD=1234
+    export JWT_SECRET="this-is-a-development-secret-key-that-is-at-least-32-bytes-long"
+    cd "$HOME/Documents/Schoolspullen/java/Weekopdracht_database_2 (1)/Weekopdracht_database_2/todo-api"
+    mvn clean test
+
+Expected result: "BUILD SUCCESS" (4 unit tests + the
+Cucumber feature scenarios).
+
+Note: the Cucumber tests TRUNCATE the test database before
+every scenario, which is why they use their own DB.
+
+------------------------------------------------------------
+NOTES / TROUBLESHOOTING
+------------------------------------------------------------
+- Keep both terminals open. Close them with Ctrl+C to stop the servers.
+- If port 8080 is already busy:  sudo lsof -i :8080
+  (kill the listed process, or restart your machine)
+- If PostgreSQL isn't running:  sudo service postgresql start
+  (check with: pg_isready)
+- The website MUST be served over http:// (this python server),
+  NOT by opening index.html directly as a file - otherwise the
+  browser blocks the API calls (CORS).
+- First mvn run is slow: it downloads dependencies.
+- If you reset the database:  sudo -u postgres dropdb todo_app
+  then redo the last two commands of Part 1.

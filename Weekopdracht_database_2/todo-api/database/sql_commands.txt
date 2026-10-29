@@ -1,0 +1,25 @@
+-- Database: todo_app
+
+-- DROP DATABASE IF EXISTS todo_app;
+
+CREATE DATABASE todo_app
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'C.UTF-8'
+    LC_CTYPE = 'C.UTF-8'
+    LOCALE_PROVIDER = 'libc'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+
+----------------------------------------------------------------
+
+CREATE TABLE todos (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    content TEXT,
+    deadline TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

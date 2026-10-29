@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js" defer></script>
+
+</head>
+
+<body>
+
+    <header class="topbar">
+        <h1>Todo App</h1>
+        <button id="logout-button" class="secondary-button" hidden>
+            Log out
+        </button>
+    </header>
+
+    <main class="container">
+        <section id="auth-section" class="panel">
+            <h2>Welcome back</h2>
+            <p>Log in or create an account to manage your tasks.</p>
+
+            <form id="login-form">
+                <label for="login-username">Username</label>
+                <input id="login-username" name="username"
+                       autocomplete="username" required>
+
+                <label for="login-password">Password</label>
+                <input id="login-password" name="password"
+                       type="password" autocomplete="current-password"
+                       required>
+
+                <button type="submit">Log in</button>
+            </form>
+
+            <hr>
+
+            <h3>Create an account</h3>
+            <form id="register-form">
+                <label for="register-username">Username</label>
+                <input id="register-username" name="username"
+                       autocomplete="username" required>
+
+                <label for="register-password">Password</label>
+                <input id="register-password" name="password"
+                       type="password" autocomplete="new-password"
+                       required>
+
+                <button type="submit" class="secondary-button">
+                    Register
+                </button>
+            </form>
+        </section>
+
+        <section id="app-section" hidden>
+            <div class="dashboard-heading">
+                <div>
+                    <h2>My tasks</h2>
+                    <p>Plan your day, one task at a time.</p>
+                </div>
+            </div>
+
+            <div class="layout">
+                <aside class="panel">
+                    <h3>My lists</h3>
+
+                    <form id="create-list-form">
+                        <label for="list-name">New list</label>
+                        <input id="list-name" name="name"
+                               placeholder="e.g. School" required>
+                        <button type="submit">Create list</button>
+                    </form>
+
+                    <ul id="lists-container" class="lists"></ul>
+                </aside>
+
+                <section class="panel tasks-panel">
+                    <h3 id="selected-list-title">Select a list</h3>
+
+                    <form id="create-item-form" hidden>
+                        <label for="item-name">Task name</label>
+                        <input id="item-name" name="name"
+                               placeholder="What needs to be done?"
+                               required>
+
+                        <label for="item-deadline">Deadline</label>
+                        <input id="item-deadline" name="deadline"
+                               type="date" required>
+
+                        <button type="submit">Add task</button>
+                    </form>
+
+                    <p id="empty-state">
+                        Create or select a list to get started.
+                    </p>
+
+                    <ul id="items-container" class="items"></ul>
+                </section>
+            </div>
+        </section>
+
+        <p id="message" class="message" role="status"
+           aria-live="polite"></p>
+           
+    </main>
+
+</body>
+
+</html>

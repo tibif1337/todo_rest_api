@@ -1,0 +1,11 @@
+mvn clean compile
+
+mvn exec:java
+
+export JWT_SECRET="this-is-a-development-secret-key-that-is-at-least-32-bytes-long"
+
+if [ -n "$JWT_SECRET" ]; then echo "JWT_SECRET is set"; else echo "JWT_SECRET is missing"; fi
+
+export DB_PASSWORD="1234"
+
+if [ -n "$DB_PASSWORD" ]; then echo "DB_PASSWORD is set"; else echo "DB_PASSWORD is missing"; fi
